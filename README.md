@@ -6,7 +6,6 @@
 
 > A lightweight OAuth2 Token Introspection API implementation following [RFC 7662](https://datatracker.ietf.org/doc/html/rfc7662), built in Go.
 
----
 
 ## 🚀 Features
 
@@ -16,7 +15,6 @@
 - Configurable timeouts
 - Simple and extensible architecture
 
----
 
 ## 📦 Requirements
 
@@ -24,7 +22,6 @@
 - (Optional) [Docker](https://www.docker.com/)
 - (Optional) [Make](https://www.gnu.org/software/make/)
 
----
 
 ## 🔧 Build and Run
 
@@ -56,6 +53,12 @@ make build-image
 make docker-run
 ```
 
+### Clean
+
+```bash
+make docker-clean
+```
+
 ## 🔐 Token Introspection (RFC 7662)
 
 ### Request
@@ -83,7 +86,7 @@ token=abc123
 }
 ```
 
-### 🧹 Clean build artifacts
+## 🧹 Clean build artifacts
 
 ```bash
 make clean
