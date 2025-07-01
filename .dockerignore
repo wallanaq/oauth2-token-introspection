@@ -1,0 +1,26 @@
+# IDE
+.git
+.vscode
+.idea
+
+# Temporary
+*.log
+*.tmp
+*.out
+
+# Test
+**/*_test.go
+
+# Binaries
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Others
+README.md
+.editorconfig
+Makefile
+Dockerfile
+docker-compose.yml
