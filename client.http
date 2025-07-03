@@ -1,0 +1,5 @@
+### Liveness
+GET http://localhost:8080/health/liveness
+
+### Introspection
+POST http://localhost:8080/api/v1/token/introspect

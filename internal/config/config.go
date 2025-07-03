@@ -1,55 +1,45 @@
 package config
 
 import (
-	"fmt"
-	"log/slog"
-	"strings"
+	"context"
 	"time"
 
-	"github.com/spf13/viper"
+	"github.com/wallanaq/oauth2-token-introspection/internal/env"
 )
 
 type Config struct {
-	Server ServerConfig `mapstructure:"server"`
+	Http   HttpConfig
+	Logger LoggerConfig
+	Server ServerConfig
+}
+
+type HttpConfig struct {
+	Port int
+}
+
+type LoggerConfig struct {
+	Type  string
+	Level string
 }
 
 type ServerConfig struct {
-	Port            int           `mapstructure:"port"`
-	ReadTimeout     time.Duration `mapstructure:"read-timeout"`
-	WriteTimeout    time.Duration `mapstructure:"write-timeout"`
-	IdleTimeout     time.Duration `mapstructure:"idle-timeout"`
-	ShutdownTimeout time.Duration `mapstructure:"shutdown-timeout"`
+	ReadTimeout     time.Duration
+	WriteTimeout    time.Duration
+	IdleTimeout     time.Duration
+	ShutdownTimeout time.Duration
 }
 
-func Load(paths ...string) (*Config, error) {
-
-	slog.Debug("loading config...")
-
-	v := viper.New()
-
-	v.SetConfigName("app-config")
-	v.SetConfigType("yaml")
-
-	for _, path := range paths {
-		v.AddConfigPath(path)
-	}
-
-	if err := v.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-			return nil, fmt.Errorf("failed to read config file: %w", err)
-		}
-	}
-
-	v.SetEnvPrefix("APP")
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	v.AutomaticEnv()
-
-	v.SetDefault("server.port", 8080)
+func Load(ctx context.Context) (*Config, error) {
 
 	var cfg Config
-	if err := v.Unmarshal(&cfg); err != nil {
-		return nil, err
-	}
+
+	cfg.Http.Port = env.GetInt("HTTP_PORT", 8080)
+	cfg.Logger.Type = env.GetString("LOG_TYPE", "text")
+	cfg.Logger.Level = env.GetString("LOG_LEVEL", "info")
+	cfg.Server.ReadTimeout = env.GetDuration("SERVER_READ_TIMEOUT", 10*time.Second)
+	cfg.Server.WriteTimeout = env.GetDuration("SERVER_WRITE_TIMEOUT", 10*time.Second)
+	cfg.Server.IdleTimeout = env.GetDuration("SERVER_IDLE_TIMEOUT", 120*time.Second)
+	cfg.Server.ShutdownTimeout = env.GetDuration("SERVER_SHUTDOWN_TIMEOUT", 5*time.Second)
 
 	return &cfg, nil
 
